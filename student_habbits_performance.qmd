@@ -1,0 +1,319 @@
+---
+title: "Student Habits vs Academic Performance"
+subtitle: "Data Programming 2025 - Project"
+date: "`r format(Sys.time(), '%e %B %Y')`"
+author: 
+  - name: "Zhivko Stoimchev"
+    email: "89221056@student.upr.si"
+    affiliations:
+    - name: "FAMNIT, University of Primorska"
+      city: "Koper"
+      state: "Slovenia"
+      postal-code: "6000"
+format:
+  html:
+    toc: true
+    toc_float: true
+    toc-location: left
+    embed-resources: true
+    theme:
+      light: darkly
+execute:
+  warning: false
+  message: false
+bibliography: references.bib
+---
+
+```{=html}
+<!--
+1. Introduction / Presentation and description of the problem
+2. Presentation of the data (present the data by showing the head of your dataframes, showing the types and explaining what is column is/what unit is in.)
+3. Tranformation of data (like agregation, joins, …). Show the result as a table (at least 3). Explain each of them.
+-->
+```
+
+# Introduction
+
+Students develop all kinds of habits during their school years. Some pull all-nighters before exams, while others stick to regular study schedules. Some prioritize eight hours of sleep, and others survive on much less. Screen time varies too - from minimal use to constant scrolling. These daily choices likely impact academic performance, but which ones matter most?
+
+```{=html}
+<!--
+Students develop many different habits throughout their academic lives. Some spend long hours studying, while others manage with less preparation. Sleep schedules vary greatly, with some students getting full nights of rest and others cutting sleep short. Time spent on phones, computers, and social media also differs significantly from one student to another. These daily habits likely affect academic performance in various ways.
+-->
+```
+
+## The problem
+
+While we often hear advice about good study habits, there's surprisingly little clear evidence about which routines actually lead to better grades. Professors recommend certain approaches, students develop their own methods, and parents suggest what worked in their day. But with so many factors involved - study time, sleep, technology use, and more - it's hard to know what really makes a difference in academic success.
+
+## Objectives
+
+This project aims to:
+
+-   Examine how different study approaches affect grades
+-   Measure the relationship between sleep patterns and academic performance
+-   Analyze whether screen time helps or hurts school results
+-   Provide visual evidence of what habits correlate with success
+
+The analysis uses data from 1,000 students to identify which daily routines tend to accompany better grades. The goal isn't to prescribe one "right way" to study, but to show what patterns emerge when we look at the numbers. The findings might confirm some expectations while challenging others, offering students practical insights they can test in their own lives.
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(skimr)
+library(knitr)
+library(psych)
+library(janitor)
+library(ggplot2)
+```
+
+# Data presentation
+
+This dataset was obtained from Kaggle(@dataset_cit). It does not include any missing values, and all columns are complete. The dataset contains information about students' study habits, social media usage, sleep patterns, and academic performance.
+
+## Data columns
+
+The dataset consists of 1,000 rows and 16 columns. Each row represents a student, and the columns contain information about their study habits and academic performance. The columns are as follows:
+
+| Name | Description | Type |
+|---------------------|-----------------------------------|----------------|
+| student_id | Unique identifier for each student | Character |
+| age | Student's age in years | Numeric |
+| gender | Student's gender (Male/Female/Other) | Factor |
+| study_hours_per_day | Daily hours spent studying | Numeric |
+| social_media_hours | Daily hours spent on social media | Numeric |
+| netflix_hours | Daily hours spent watching Netflix | Numeric |
+| part_time_job | Whether student has a job (Yes/No) | Logical |
+| attendance_percentage | Class attendance rate (0-100%) | Numeric |
+| sleep_hours | Average nightly sleep duration | Numeric |
+| diet_quality | Self-reported diet quality (Poor/Fair/Good) | Factor |
+| exercise_frequency | Weekly exercise sessions | Numeric |
+| parental_education_level | Highest parental education | Factor |
+| internet_quality | Quality of internet access | Factor |
+| mental_health_rating | Self-rated mental health (1-10 scale) | Numeric |
+| extracurricular_participation | Whether student does extracurriculars | Logical |
+| exam_score | Final exam score (0-100 scale) | Numeric |
+
+## Presentation of the Data
+
+```{r}
+data <- read_csv("student_habits_performance.csv")
+skim(data)
+head(data, 5) %>% kable()
+```
+
+Among the 1,000 columns, we ca see that there are no missing values.
+
+```{r}
+data |> 
+  clean_names() |>
+  describe() |>
+  kable()
+```
+
+# Transformation of data
+
+Through grouping and normalization, student patterns will be uncovered, revealing how study habits, sleep, and screen time relate to academic performance.
+
+## Gender Based Comparison
+
+```{r}
+data %>%
+  group_by(gender) %>%
+  summarize(avg_exam_score = mean(exam_score, na.rm = TRUE),
+            avg_study_hours = mean(study_hours_per_day, na.rm = TRUE),
+            avg_sleep_hours = mean(sleep_hours, na.rm = TRUE)) %>%
+  kable()
+```
+
+From the results above, we can see that students who identify as "Other" have the highest average exam score (70.65) and the most sleep (6.80 hours), while females study slightly more (3.58 hours) and score higher than males, whose averages are marginally lower in all categories.
+
+## Average Performance per Performance Level
+
+```{r}
+data %>%
+  mutate(performance_group = case_when(
+    exam_score < 50 ~ "Fail",
+    exam_score >= 50 & exam_score < 60 ~ "Sufficient",
+    exam_score >= 60 & exam_score < 70 ~ "Satisfactory",
+    exam_score >= 70 & exam_score < 80 ~ "Good",
+    exam_score >= 80 & exam_score < 90 ~ "Very Good",
+    exam_score >= 90 & exam_score < 100 ~ "Excellent",
+    exam_score == 100 ~ "Outstanding"
+  )) -> data
+```
+
+Added `performance_group` column to categorize students based on their exam scores. The categories are defined as follows:
+
+-   **Fail**: exam score \< 50
+-   **Sufficient**: 50 \<= exam score \< 60
+-   **Satisfactory**: 60 \<= exam score \< 70
+-   **Good**: 70 \<= exam score \< 80
+-   **Very Good**: 80 \<= exam score \< 90
+-   **Excellent**: 90 \<= exam score \< 100
+-   **Outstanding**: exam score = 100
+
+```{r}
+data %>%
+  group_by(performance_group) %>%
+  summarize(n_students = n(),
+            avg_exam_score = mean(exam_score, na.rm = TRUE),
+            avg_study_hours = mean(study_hours_per_day, na.rm = TRUE),
+            avg_attendance_hours = mean(attendance_percentage, na.rm = TRUE),
+            avg_sleep_hours = mean(sleep_hours, na.rm = TRUE),
+            avg_social_media_hours = mean(social_media_hours, na.rm = TRUE),
+            avg_netflix_hours = mean(netflix_hours, na.rm = TRUE)) %>%
+  arrange(desc(avg_exam_score)) -> data_stats
+
+data_stats %>% 
+    kable()
+```
+
+This transformation categorizes students by exam performance and calculates average metrics for each group. The results reveal clear patterns: *higher-performing students study more and use less screen time*, while sleep and attendance show minimal variation across groups.
+
+### The most dominant group
+
+```{r}
+data_stats %>%
+  mutate(n_percentage = n_students / sum(n_students) * 100) %>%
+  select(performance_group, avg_exam_score, avg_study_hours, n_students, n_percentage) %>%
+  arrange(desc(n_students)) %>%
+  kable()
+```
+
+The most common performance group is "Good" with 234 students, balancing study hours (3.80) and maintaining solid exam scores (74.40).
+
+### Study hours, attendance rate and exam scores
+
+```{r}
+data_stats %>%
+  mutate(
+    norm_study_hours = scale(avg_study_hours),
+    norm_attendance = scale(avg_attendance_hours),
+    importance = ifelse(norm_study_hours > norm_attendance, "Study Matters", "Attendance Matters")
+  ) %>%
+  select(performance_group, avg_exam_score, norm_study_hours, norm_attendance, importance) %>%
+  arrange(desc(avg_exam_score)) %>%
+  kable()
+```
+
+Students who study more tend to perform better. The "Outstanding" group has the highest average study hours (normalized) and the best exam scores, while the "Fail" group has the lowest study hours (normalized) and exam scores (normalized). Attendance percentages remain stable across all performance groups, indicating that while attendance is important, it does not directly correlate with higher exam scores (study time matters more).
+
+### Sleep hours among all the groups
+
+```{r}
+data_stats %>%
+  select(performance_group, avg_sleep_hours) %>%
+  arrange(desc(avg_sleep_hours)) %>%
+  kable()
+```
+
+Across all performance groups, sleep hours remain consistent (around 6-6.8 hours), suggesting that sleep does not directly determine academic success.
+
+## Identifying High Screen-Time Students
+
+```{r}
+data %>%
+  summarize(
+    overall_avg_exam_score = mean(exam_score, na.rm = TRUE),
+    high_screen_time_avg_exam_score = mean(exam_score[social_media_hours > 5 | netflix_hours > 5], na.rm = TRUE)
+  ) %>%
+  kable()
+```
+
+People who spend more than 5 hours on social media or Netflix have an average exam score of 65.86, which is below the overall average of 69.60. This suggests that high screen time may negatively impact academic performance.
+
+## Categorizing students based on study intensity
+
+```{r}
+data_with_study_levels <- data %>%
+  mutate(study_intensity = case_when(
+    study_hours_per_day < 2 ~ "Light",
+    study_hours_per_day >= 2 & study_hours_per_day < 4 ~ "Moderate",
+    study_hours_per_day >= 4 ~ "Intense"
+  ))
+
+data_with_study_levels %>%
+  select(student_id, study_hours_per_day, study_intensity, exam_score) %>%
+  slice_sample(n = 5) %>%
+  arrange(study_hours_per_day) %>%
+  kable(caption = "Sample of Study Intensity Classification")
+```
+
+This categorizes students into three study intensity levels based on their daily study hours:
+
+-   **Light**: \< 2 hours
+-   **Moderate**: 2 to 4 hours
+-   **Intense**: 4 or more hours
+
+We can see that students with more intense study habits tend to perform better academically.
+
+# Exploratory data analysis
+
+## Distribution of Students by Performance Group (Bar Plot)
+
+```{r}
+data %>%
+  count(performance_group) %>%
+  ggplot(aes(x = performance_group, y = n, fill = performance_group)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Distribution of Students by Performance Group", x = "Performance Group", y = "Number of Students")
+```
+
+The bar chart displays distribution of students across different performance categories. The highest number of students fall in the group "Good", followed by "Satisfactory". The lowest number appears in the "Outstanding" and "Excellent" groups, indicating a lot of people struggle to achieve top scores. Overall, the trend is that an average student has average to above-average results.
+
+## Study Hours vs Exam Score (Scatter Plot)
+
+```{r}
+ggplot(data, aes(x = study_hours_per_day, y = exam_score)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  geom_smooth(method = "lm", col = "red", se = FALSE) +
+  labs(title = "Study Hours vs Exam Score", x = "Study Hours Per Day", y = "Exam Score")
+```
+
+The scatter plot shows a positive correlation between study hours and exam scores. The horizontal axis represents study hours, ranging from 0 to 10 hours per day, while the vertical axis shows exam scores, ranging from 0 to 100. Each blue dot represents a student's performance, indicating how their study time relates to their exam results. The trend by the red line is showing a positive correlation between study hours and exam scores. As study time increases, the exam score tends to improve.
+
+## Sleep Hours by Performance Group (Box Plot)
+
+```{r}
+ggplot(data, aes(x = performance_group, y = sleep_hours, fill = performance_group)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Sleep Hours by Performance Group", x = "Performance Group", y = "Sleep Hours")
+```
+
+The box plot illustrates the distribution of sleep hours across different performance groups. The horizontal axis represents the performance groups, while the vertical axis shows sleep hours, ranging from 0 to 10. Each box represents the interquartile range (IQR) of sleep hours for each group, with the line inside the box indicating the median. The "Outstanding" group has the highest median sleep hours (6.8), while the "Fail" group has the lowest (5.2). The plot suggests that students who perform better tend to get more sleep, although all groups average around 6-7 hours.
+
+# Conclusion
+
+Up until now, the analysis reveals three key insights about student performance, namely:
+
+1.  **Study time matters most**: Students scoring \>90% average 5.70 study hours/day vs 1.60 hours for failing students
+2.  **Screen time hurts**: Every performance tier shows 15-30% more screen time than the tier above it
+3.  **Sleep is consistent**: All groups average 6-7 hours, suggesting it's a baseline requirement
+
+```{r}
+data %>%
+  select(exam_score, study_hours_per_day, social_media_hours, 
+         netflix_hours, sleep_hours, attendance_percentage) %>%
+  pivot_longer(-exam_score, names_to = "metric", values_to = "value") %>%
+  ggplot(aes(x = value, y = exam_score)) +
+  geom_point(alpha = 0.3, color = "steelblue") +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  facet_wrap(~metric, scales = "free_x", ncol = 3) +
+  labs(title = "Key Factors vs Exam Scores",
+       x = "Value (hours/percentage)",
+       y = "Exam Score") +
+  theme_minimal()
+```
+
+The analysis shows that study time has the strongest correlation with exam scores, while screentime negatively impacts performance. Sleep duration remains consistent across groups, suggesting it is a baseline requirement for all students.
+
+Netflix hours have a weak negative correlation with exam scores, while Social media hours show a slightly stronger negative trend. Attendance percentage has a minimal impact on exam scores, indicating that while it is important, it does not directly correlate with higher academic performance.
+
+# Summary
+
+In summary, the analysis highlights the importance of study habits and their impact on academic performance. Students who dedicate more time to studying tend to achieve better exam scores, while excessive screen time can hinder their success. Sleep duration remains relatively stable across performance groups, suggesting it is a necessary foundation for academic achievement.
+
