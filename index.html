@@ -3123,7 +3123,7 @@ vertical-align: -.125em;
   <li><a href="#transformation-of-data" id="toc-transformation-of-data" class="nav-link" data-scroll-target="#transformation-of-data">Transformation of data</a>
   <ul class="collapse">
   <li><a href="#categorizing-students-based-on-study-intensity" id="toc-categorizing-students-based-on-study-intensity" class="nav-link" data-scroll-target="#categorizing-students-based-on-study-intensity">Categorizing students based on study intensity</a></li>
-  <li><a href="#screen-time" id="toc-screen-time" class="nav-link" data-scroll-target="#screen-time">screen time</a></li>
+  <li><a href="#screen-time-categorization" id="toc-screen-time-categorization" class="nav-link" data-scroll-target="#screen-time-categorization">Screen time categorization</a></li>
   <li><a href="#gender-based-comparison" id="toc-gender-based-comparison" class="nav-link" data-scroll-target="#gender-based-comparison">Gender Based Comparison</a></li>
   <li><a href="#average-performance-per-performance-level" id="toc-average-performance-per-performance-level" class="nav-link" data-scroll-target="#average-performance-per-performance-level">Average Performance per Performance Level</a>
   <ul class="collapse">
@@ -4091,40 +4091,40 @@ vertical-align: -.125em;
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">S1803</td>
-<td style="text-align: right;">4.5</td>
+<td style="text-align: left;">S1802</td>
+<td style="text-align: right;">4.3</td>
 <td style="text-align: left;">Intense</td>
-<td style="text-align: right;">76.3</td>
+<td style="text-align: right;">82.9</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">S1133</td>
-<td style="text-align: right;">4.8</td>
+<td style="text-align: left;">S1638</td>
+<td style="text-align: right;">5.1</td>
 <td style="text-align: left;">Intense</td>
-<td style="text-align: right;">78.4</td>
+<td style="text-align: right;">99.4</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">S1048</td>
-<td style="text-align: right;">1.4</td>
+<td style="text-align: left;">S1790</td>
+<td style="text-align: right;">0.8</td>
 <td style="text-align: left;">Light</td>
-<td style="text-align: right;">52.6</td>
+<td style="text-align: right;">31.5</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">S1369</td>
-<td style="text-align: right;">1.8</td>
+<td style="text-align: left;">S1692</td>
+<td style="text-align: right;">1.7</td>
 <td style="text-align: left;">Light</td>
-<td style="text-align: right;">70.9</td>
+<td style="text-align: right;">37.4</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">S1995</td>
-<td style="text-align: right;">2.6</td>
+<td style="text-align: left;">S1344</td>
+<td style="text-align: right;">3.2</td>
 <td style="text-align: left;">Moderate</td>
-<td style="text-align: right;">76.1</td>
+<td style="text-align: right;">81.7</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">S1951</td>
-<td style="text-align: right;">3.3</td>
+<td style="text-align: left;">S1860</td>
+<td style="text-align: right;">3.6</td>
 <td style="text-align: left;">Moderate</td>
-<td style="text-align: right;">94.0</td>
+<td style="text-align: right;">65.6</td>
 </tr>
 </tbody>
 </table>
@@ -4138,31 +4138,28 @@ vertical-align: -.125em;
 </ul>
 <p>We can see that students with more intense study habits tend to perform better academically.</p>
 </section>
-<section id="screen-time" class="level2">
-<h2 class="anchored" data-anchor-id="screen-time">screen time</h2>
+<section id="screen-time-categorization" class="level2">
+<h2 class="anchored" data-anchor-id="screen-time-categorization">Screen time categorization</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add this in your &quot;Transformation of data&quot; section</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to categorize screen time usage</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>categorize_screen_time <span class="ot">&lt;-</span> <span class="cf">function</span>(social_media, netflix) {</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    (social_media <span class="sc">+</span> netflix) <span class="sc">&gt;</span> <span class="dv">6</span> <span class="sc">~</span> <span class="st">&quot;Very High&quot;</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    (social_media <span class="sc">+</span> netflix) <span class="sc">&gt;</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">&quot;High&quot;</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    (social_media <span class="sc">+</span> netflix) <span class="sc">&gt;</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">&quot;Moderate&quot;</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Low&quot;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the function to create a new column</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">screen_time_level =</span> <span class="fu">categorize_screen_time</span>(social_media_hours, netflix_hours))</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Show results</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(screen_time_level) <span class="sc">%&gt;%</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">&quot;Students by Screen Time Level&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>categorize_screen_time <span class="ot">&lt;-</span> <span class="cf">function</span>(social_media, netflix) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    (social_media <span class="sc">+</span> netflix) <span class="sc">&gt;</span> <span class="dv">6</span> <span class="sc">~</span> <span class="st">&quot;Very High&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    (social_media <span class="sc">+</span> netflix) <span class="sc">&gt;</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">&quot;High&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    (social_media <span class="sc">+</span> netflix) <span class="sc">&gt;</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">&quot;Moderate&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Low&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>screen_time_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">screen_time_level =</span> <span class="fu">categorize_screen_time</span>(social_media_hours, netflix_hours))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>screen_time_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(screen_time_level) <span class="sc">%&gt;%</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">&quot;Number of students by Screen Time Level&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>Students by Screen Time Level</caption>
+<caption>Number of students by Screen Time Level</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">screen_time_level</th>
@@ -4175,21 +4172,29 @@ vertical-align: -.125em;
 <td style="text-align: right;">429</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Low</td>
-<td style="text-align: right;">90</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">Moderate</td>
 <td style="text-align: right;">346</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Very High</td>
 <td style="text-align: right;">135</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Low</td>
+<td style="text-align: right;">90</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<p>In this transformation, students are categorized based on their combined social media and Netflix usage into four levels, namely:</p>
+<ul>
+<li><strong>Low</strong>: 2 hours or less</li>
+<li><strong>Moderate</strong>: 2 to 4 hours</li>
+<li><strong>High</strong>: 4 to 6 hours</li>
+<li><strong>Very High</strong>: More than 6 hours</li>
+</ul>
+<p>We can see that most of the students fall into the “High” screen time category, with a significant number also in the “Moderate” category. This suggests that many students balance their screen time with other activities.</p>
 </section>
 <section id="gender-based-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="gender-based-comparison">Gender Based Comparison</h2>

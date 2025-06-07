@@ -126,11 +126,9 @@ This categorizes students into three study intensity levels based on their daily
 
 We can see that students with more intense study habits tend to perform better academically.
 
-## screen time
+## Screen time categorization
 
 ```{r}
-# Add this in your "Transformation of data" section
-# Define a function to categorize screen time usage
 categorize_screen_time <- function(social_media, netflix) {
   case_when(
     (social_media + netflix) > 6 ~ "Very High",
@@ -140,15 +138,23 @@ categorize_screen_time <- function(social_media, netflix) {
   )
 }
 
-# Apply the function to create a new column
-data <- data %>%
+screen_time_data <- data %>%
   mutate(screen_time_level = categorize_screen_time(social_media_hours, netflix_hours))
 
-# Show results
-data %>%
+screen_time_data %>%
   count(screen_time_level) %>%
-  kable(caption = "Students by Screen Time Level")
+  arrange(desc(n)) %>%
+  kable(caption = "Number of students by Screen Time Level")
 ```
+
+In this transformation, students are categorized based on their combined social media and Netflix usage into four levels, namely:
+
+- **Low**: 2 hours or less
+- **Moderate**: 2 to 4 hours
+- **High**: 4 to 6 hours
+- **Very High**: More than 6 hours
+
+We can see that most of the students fall into the "High" screen time category, with a significant number also in the "Moderate" category. This suggests that many students balance their screen time with other activities.
 
 ## Gender Based Comparison
 
