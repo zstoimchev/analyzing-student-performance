@@ -90,9 +90,9 @@ skim(data)
 Among the 1,000 columns, we can see that there are no missing values.
 
 ```{r}
-data |> 
-  clean_names() |>
-  describe() |>
+data %>%
+  clean_names() %>%
+  describe() %>%
   kable()
 ```
 
@@ -125,6 +125,30 @@ This categorizes students into three study intensity levels based on their daily
 -   **Intense**: 4 or more hours
 
 We can see that students with more intense study habits tend to perform better academically.
+
+## screen time
+
+```{r}
+# Add this in your "Transformation of data" section
+# Define a function to categorize screen time usage
+categorize_screen_time <- function(social_media, netflix) {
+  case_when(
+    (social_media + netflix) > 6 ~ "Very High",
+    (social_media + netflix) > 4 ~ "High",
+    (social_media + netflix) > 2 ~ "Moderate",
+    TRUE ~ "Low"
+  )
+}
+
+# Apply the function to create a new column
+data <- data %>%
+  mutate(screen_time_level = categorize_screen_time(social_media_hours, netflix_hours))
+
+# Show results
+data %>%
+  count(screen_time_level) %>%
+  kable(caption = "Students by Screen Time Level")
+```
 
 ## Gender Based Comparison
 
