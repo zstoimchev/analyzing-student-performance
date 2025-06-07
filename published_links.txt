@@ -1,0 +1,5 @@
+The analysis is published on several websites, in case one fails:
+
+- Netlify: https://student-habbits-academic-performance.netlify.app/
+- GitHub Pages: https://zstoimchev.github.io/analyzing-student-performance/
+- 
