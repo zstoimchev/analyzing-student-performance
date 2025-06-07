@@ -1,0 +1,3 @@
+*.qmd linguist-detectable=true
+*.R linguist-detectable=true
+*.html linguist-generated
